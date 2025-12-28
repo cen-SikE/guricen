@@ -1,6 +1,6 @@
 {
-  "name": "구리 센트럴병원 (Guri Central Hospital)",
-  "description": "최첨단 의료 장비와 따뜻한 마음으로 지역 사회의 건강을 책임지는 구리 센트럴병원 공식 웹사이트입니다.",
+  "name": "구리 센트럴병원 - SNUH 프리미엄 에디션",
+  "description": "서울대학교병원의 전문성과 편의성을 벤치마킹한 구리 센트럴병원의 차세대 웹사이트입니다.",
   "requestFramePermissions": [
     "geolocation"
   ]
