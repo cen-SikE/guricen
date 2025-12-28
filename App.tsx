@@ -1,28 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Services from './components/Services';
-import AIChat from './components/AIChat';
-import Appointment from './components/Appointment';
-import Stats from './components/Stats';
-import Footer from './components/Footer';
+import Navbar from './components/Navbar.tsx';
+import Hero from './components/Hero.tsx';
+import Services from './components/Services.tsx';
+import AIChat from './components/AIChat.tsx';
+import Appointment from './components/Appointment.tsx';
+import Stats from './components/Stats.tsx';
+import Footer from './components/Footer.tsx';
 
 const App: React.FC = () => {
-  const [activeSection, setActiveSection] = useState('home');
-
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '') || 'home';
-      setActiveSection(hash);
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-    handleHashChange();
-
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -44,7 +30,6 @@ const App: React.FC = () => {
           <Appointment />
         </section>
 
-        {/* Floating AI Assistant Trigger Button is handled inside AIChat component */}
         <AIChat />
       </main>
 
