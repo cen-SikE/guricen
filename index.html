@@ -12,7 +12,7 @@
             font-family: 'Noto Sans KR', sans-serif;
             scroll-behavior: smooth;
         }
-        /* 페이드인 애니메이션 추가 */
+        /* 페이드인 애니메이션 */
         .animate-fade-in {
             animation: fadeIn 1s ease-out forwards;
         }
@@ -37,7 +37,7 @@
 </head>
 <body class="bg-gray-50">
     <div id="root"></div>
-    <!-- 앱 진입점 스크립트 추가: 이 줄이 없으면 화면이 표시되지 않습니다 -->
-    <script type="module" src="./index.tsx"></script>
+    <!-- GitHub Pages 서브디렉토리 대응을 위해 상대 경로 유지 -->
+    <script type="module" src="index.tsx"></script>
 </body>
 </html>

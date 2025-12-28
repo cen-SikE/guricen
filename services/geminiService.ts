@@ -14,7 +14,8 @@ const HOSPITAL_CONTEXT = `
 
 export const getGeminiResponse = async (userMessage: string) => {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+    // 가이드라인에 따른 API 키 설정 (process.env.API_KEY 직접 사용)
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: userMessage,
@@ -23,7 +24,13 @@ export const getGeminiResponse = async (userMessage: string) => {
         temperature: 0.7,
       },
     });
-    return response.text || "죄송합니다. 현재 응답을 드릴 수 없습니다. 잠시 후 다시 시도해주세요.";
+    
+    // .text 프로퍼티를 사용하여 문자열 추출
+    const text = response.text;
+    if (typeof text === 'string') {
+      return text;
+    }
+    return "죄송합니다. 현재 응답을 드릴 수 없습니다. 잠시 후 다시 시도해주세요.";
   } catch (error) {
     console.error("Gemini API Error:", error);
     return "연결 오류가 발생했습니다. 병원 대표번호 1588-0000으로 문의 부탁드립니다.";
