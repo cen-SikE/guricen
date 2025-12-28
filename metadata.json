@@ -1,0 +1,7 @@
+{
+  "name": "구리 센트럴병원 (Guri Central Hospital)",
+  "description": "최첨단 의료 장비와 따뜻한 마음으로 지역 사회의 건강을 책임지는 구리 센트럴병원 공식 웹사이트입니다.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
