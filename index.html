@@ -5,64 +5,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>구리 센트럴병원 - 환자 중심의 의료 혁신</title>
+    <!-- Tailwind CSS (디자인을 쉽게 해주는 도구) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            scroll-behavior: smooth;
-        }
-        /* 페이드인 애니메이션 */
-        .animate-fade-in {
-            animation: fadeIn 1s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        #loading-screen {
-            position: fixed;
-            inset: 0;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-out;
-        }
+        body { font-family: 'Noto Sans KR', sans-serif; scroll-behavior: smooth; }
+        .chat-window { display: none; }
+        .chat-window.active { display: flex; }
     </style>
     <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@18.2.0",
-    "react-dom": "https://esm.sh/react-dom@18.2.0",
-    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
     "@google/genai": "https://esm.sh/@google/genai@1.3.0",
-    "recharts": "https://esm.sh/recharts@2.10.3?external=react,react-dom",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/"
+    "react": "https://esm.sh/react@^19.2.3",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "recharts": "https://esm.sh/recharts@^3.6.0"
   }
 }
 </script>
 </head>
-<body class="bg-gray-50">
-    <div id="loading-screen">
-        <div class="text-center">
-            <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p class="text-blue-900 font-medium">구리 센트럴병원 페이지를 불러오는 중...</p>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- 상단 메뉴 (Navbar) -->
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-2xl font-bold text-blue-700">구리 <span class="text-blue-900">센트럴병원</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#home" class="hover:text-blue-600 transition">병원소개</a>
+                    <a href="#services" class="hover:text-blue-600 transition">진료안내</a>
+                    <a href="#appointment" class="hover:text-blue-600 transition">진료예약</a>
+                    <a href="#appointment" class="bg-blue-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-blue-700 transition">빠른예약</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 화면 (Hero) -->
+    <section id="home" class="relative h-[70vh] flex items-center justify-center text-white pt-16">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1920" class="w-full h-full object-cover brightness-50" alt="병원 배경">
+        </div>
+        <div class="relative z-10 text-center px-4">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">당신의 건강한 미래,<br>구리 센트럴병원이 지킵니다</h1>
+            <p class="text-xl md:text-2xl mb-8 font-light text-gray-200">대학병원급 첨단 장비와 분야별 전문의의 정밀한 진단</p>
+            <a href="#appointment" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-bold transition inline-block">온라인 예약하기</a>
+        </div>
+    </section>
+
+    <!-- 진료과목 (Services) -->
+    <section id="services" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">최상의 의료 시스템</h2>
+            <div class="w-16 h-1 bg-blue-600 mx-auto rounded-full"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div class="bg-white p-8 rounded-2xl shadow-sm border hover:shadow-md transition">
+                <div class="text-4xl mb-4">🏥</div>
+                <h3 class="text-xl font-bold mb-2">내과 센터</h3>
+                <p class="text-gray-600">소화기, 순환기 등 전문의의 꼼꼼한 진료</p>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border hover:shadow-md transition">
+                <div class="text-4xl mb-4">🦴</div>
+                <h3 class="text-xl font-bold mb-2">정형외과</h3>
+                <p class="text-gray-600">관절 및 척추 비수술적 치료 시스템</p>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border hover:shadow-md transition">
+                <div class="text-4xl mb-4">📋</div>
+                <h3 class="text-xl font-bold mb-2">종합검진센터</h3>
+                <p class="text-gray-600">최신 MRI, CT 장비를 활용한 정밀 검진</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 예약 폼 (Appointment) -->
+    <section id="appointment" class="py-20 bg-blue-50">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden md:flex">
+                <div class="md:w-1/3 bg-blue-700 text-white p-10">
+                    <h2 class="text-2xl font-bold mb-6">간편 진료 예약</h2>
+                    <p class="text-blue-100 mb-6 text-sm">정보를 남겨주시면 상담원이 빠른 시일 내에 연락드립니다.</p>
+                    <div class="space-y-4">
+                        <p>📞 1588-0000</p>
+                        <p>🕒 평일 09:00 - 18:00</p>
+                    </div>
+                </div>
+                <div class="md:w-2/3 p-10">
+                    <form id="appointmentForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="apt-name" placeholder="성함" required class="border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <input type="tel" id="apt-phone" placeholder="연락처" required class="border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <select id="apt-dept" class="border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option>내과</option>
+                            <option>정형외과</option>
+                            <option>검진센터</option>
+                        </select>
+                        <input type="date" id="apt-date" class="border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <textarea id="apt-msg" placeholder="문의내용" class="md:col-span-2 border p-3 rounded-lg h-24 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                        <button type="submit" class="md:col-span-2 bg-blue-600 text-white py-4 rounded-lg font-bold hover:bg-blue-700 transition">예약 신청하기</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI 채팅 위젯 (AIChat) -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button id="chatToggle" class="w-16 h-16 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition">
+            💬
+        </button>
+        <div id="chatWindow" class="chat-window absolute bottom-20 right-0 w-80 md:w-96 h-[500px] bg-white rounded-2xl shadow-2xl border flex-col overflow-hidden">
+            <div class="bg-blue-600 p-4 text-white flex justify-between items-center">
+                <span class="font-bold">센트럴 케어 AI</span>
+                <button id="chatClose">✕</button>
+            </div>
+            <div id="chatMessages" class="flex-grow p-4 overflow-y-auto bg-gray-50 space-y-4 text-sm">
+                <div class="bg-white p-3 rounded-lg shadow-sm">안녕하세요! 구리 센트럴병원 AI 안내 비서입니다. 무엇을 도와드릴까요?</div>
+            </div>
+            <div class="p-4 border-t flex gap-2">
+                <input type="text" id="chatInput" placeholder="질문 입력..." class="flex-grow border rounded-full px-4 py-2 outline-none focus:ring-1 focus:ring-blue-500 text-sm">
+                <button id="chatSend" class="bg-blue-600 text-white px-4 py-2 rounded-full font-bold">전송</button>
+            </div>
         </div>
     </div>
-    <div id="root"></div>
-    <script type="module">
-        import './index.tsx';
-        // 로딩 화면 제거
-        window.addEventListener('load', () => {
-            const loader = document.getElementById('loading-screen');
-            if(loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => loader.remove(), 500);
-            }
-        });
-    </script>
+
+    <!-- 푸터 (Footer) -->
+    <footer class="bg-gray-900 text-gray-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-white font-bold text-xl mb-4">구리 센트럴병원</p>
+            <p class="text-sm mb-4">경기도 구리시 중앙로 123 (구리중앙빌딩) | 대표전화: 1588-0000</p>
+            <p class="text-xs">© 2024 Guri Central Hospital. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="index.tsx"></script>
 </body>
 </html>
