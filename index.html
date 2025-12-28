@@ -5,29 +5,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>구리 센트럴병원 - 환자 중심의 의료 혁신</title>
+    <!-- Tailwind CSS (디자인 도구) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Noto Sans KR', sans-serif; scroll-behavior: smooth; }
         .bg-snuh-blue { background-color: #004a95; }
         .text-snuh-blue { color: #004a95; }
         .border-snuh-blue { border-color: #004a95; }
         
-        /* SNUH 스타일 퀵메뉴 박스 */
-        .quick-box {
-            background: rgba(255, 255, 255, 0.95);
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        /* 이미지 기반 퀵메뉴 스타일 */
+        .image-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 40px;
+            height: 320px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
         }
-        .quick-box:hover {
-            transform: translateY(-10px);
-            background: #004a95;
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+        .image-card .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,74,149,0.9) 0%, rgba(0,0,0,0.2) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
             color: white;
+            transition: background 0.5s ease;
         }
+        .image-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 30px 60px rgba(0,74,149,0.2);
+        }
+        .image-card:hover img {
+            transform: scale(1.1);
+        }
+        .image-card:hover .overlay {
+            background: linear-gradient(to top, rgba(0,74,149,1) 0%, rgba(0,74,149,0.4) 100%);
+        }
+
+        /* AI 채팅창 상태 */
+        #chatWindow { display: none; }
+        #chatWindow.active { display: flex; }
         
-        /* 챗봇 숨김/표시 */
-        .chat-window { display: none; }
-        .chat-window.active { display: flex; }
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 1.2s ease-out forwards; }
+
+        /* 부드러운 스크롤바 */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #004a95; border-radius: 20px; border: 2px solid #f8fafc; }
     </style>
     <script type="importmap">
 {
@@ -40,275 +79,284 @@
 }
 </script>
 </head>
-<body class="bg-white text-gray-900">
+<body class="bg-white text-gray-900 leading-loose">
 
-    <!-- 상단 유틸리티 바 -->
-    <div class="bg-gray-100 border-b hidden lg:block">
-        <div class="max-w-7xl mx-auto px-4 flex justify-end space-x-4 py-2 text-xs text-gray-500">
-            <a href="#" class="hover:underline">로그인</a>
-            <a href="#" class="hover:underline">회원가입</a>
-            <a href="#" class="hover:underline">채용공고</a>
-            <a href="#" class="hover:underline font-bold text-snuh-blue">ENGLISH</a>
+    <!-- 상단 유틸리티 -->
+    <div class="bg-gray-50 border-b hidden lg:block">
+        <div class="max-w-7xl mx-auto px-6 flex justify-end space-x-12 py-4 text-xs text-gray-400 font-bold tracking-widest uppercase">
+            <a href="#" class="hover:text-snuh-blue transition-colors">Login</a>
+            <a href="#" class="hover:text-snuh-blue transition-colors">Sign up</a>
+            <a href="#" class="text-snuh-blue">KOR</a>
+            <a href="#" class="hover:text-snuh-blue transition-colors">ENG</a>
         </div>
     </div>
 
     <!-- 메인 네비게이션 -->
-    <nav class="sticky top-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <div class="flex-shrink-0 flex items-center">
-                    <span class="text-2xl font-black text-snuh-blue tracking-tighter">
-                        GURI <span class="text-gray-900">CENTRAL</span>
-                    </span>
-                    <span class="ml-2 pl-2 border-l border-gray-300 text-lg font-bold text-gray-600">구리 센트럴병원</span>
+    <nav class="sticky top-0 bg-white/95 backdrop-blur-xl shadow-sm z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10">
+            <div class="flex justify-between h-28 items-center">
+                <div class="flex items-center cursor-pointer" onclick="location.href='#home'">
+                    <span class="text-3xl font-black text-snuh-blue tracking-tighter">GURI <span class="text-gray-800">CENTRAL</span></span>
+                    <span class="ml-6 pl-6 border-l-2 border-gray-100 text-xl font-bold text-gray-500 hidden sm:block">구리 센트럴병원</span>
                 </div>
-                <div class="hidden lg:flex space-x-10 items-center font-bold text-gray-700">
-                    <a href="#home" class="hover:text-snuh-blue transition">진료/예약</a>
-                    <a href="#services" class="hover:text-snuh-blue transition">센터/부서</a>
-                    <a href="#specialists" class="hover:text-snuh-blue transition">의료진소개</a>
-                    <a href="#appointment" class="hover:text-snuh-blue transition">건강정보</a>
-                    <button class="text-snuh-blue border-2 border-snuh-blue px-4 py-1.5 rounded-full hover:bg-snuh-blue hover:text-white transition">검색 🔍</button>
+                <div class="hidden lg:flex space-x-16 items-center font-bold text-gray-700 text-lg">
+                    <a href="#services" class="hover:text-snuh-blue transition-all">진료안내</a>
+                    <a href="#specialists" class="hover:text-snuh-blue transition-all">의료진소개</a>
+                    <a href="#appointment" class="hover:text-snuh-blue transition-all">진료예약</a>
+                    <a href="#home" class="bg-snuh-blue text-white px-10 py-4 rounded-full hover:bg-blue-900 transition-all shadow-2xl shadow-blue-900/30">빠른예약</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- 메인 비주얼 (Hero) -->
-    <section id="home" class="relative h-[650px] flex items-center overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1920" class="w-full h-full object-cover" alt="병원 이미지">
-            <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
+    <!-- 메인 히어로 배너 -->
+    <section id="home" class="relative h-[850px] flex items-center overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1920" class="w-full h-full object-cover" alt="Hospital Lobby">
+            <div class="absolute inset-0 bg-black/55"></div>
         </div>
-        
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
-            <h1 class="text-5xl md:text-6xl font-black mb-6 leading-tight animate-fade-in">
-                환자를 위한 따뜻한 동행,<br><span class="text-snuh-blue bg-white px-2">최상의 의료</span>를 경험하세요
-            </h1>
-            <p class="text-xl md:text-2xl mb-12 font-light text-gray-300">구리 센트럴병원은 한 차원 높은 진료 시스템으로<br>당신의 건강한 내일을 약속합니다.</p>
-            
-            <!-- 3대 퀵버튼 -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl">
-                <div class="quick-box p-8 rounded-xl text-gray-900 flex flex-col items-center cursor-pointer">
-                    <span class="text-3xl mb-3">📅</span>
-                    <span class="text-xl font-bold">진료예약</span>
+        <div class="relative z-10 max-w-7xl mx-auto px-6 text-white">
+            <div class="animate-fade-in">
+                <p class="text-blue-400 font-black text-sm tracking-[0.4em] uppercase mb-8">Patient-First Care Innovation</p>
+                <h1 class="text-6xl md:text-8xl font-black mb-12 leading-[1.6] tracking-tight">
+                    당신의 건강한 삶,<br>구리 센트럴이 함께합니다
+                </h1>
+                <p class="text-2xl md:text-4xl mb-20 font-light opacity-90 leading-loose max-w-4xl">
+                    대학병원 수준의 정밀 진단 시스템과 따뜻한 인술로<br>지역사회의 건강을 책임지는 최고의 동반자가 되겠습니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 이미지 기반 세분화 퀵메뉴 -->
+    <section class="relative z-20 -mt-32 max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <!-- 1. 진료예약 -->
+            <div class="image-card group" onclick="location.href='#appointment'">
+                <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800" alt="Appointment">
+                <div class="overlay">
+                    <span class="text-4xl mb-4 group-hover:scale-125 transition-transform duration-500">📅</span>
+                    <h3 class="text-3xl font-black mb-3">진료예약</h3>
+                    <p class="text-blue-100/80 font-medium leading-relaxed">24시간 언제 어디서나<br>간편한 온라인 예약 서비스</p>
                 </div>
-                <div class="quick-box p-8 rounded-xl text-gray-900 flex flex-col items-center cursor-pointer">
-                    <span class="text-3xl mb-3">🩺</span>
-                    <span class="text-xl font-bold">의료진 찾기</span>
+            </div>
+            <!-- 2. 의료진 찾기 -->
+            <div class="image-card group" onclick="location.href='#specialists'">
+                <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=800" alt="Medical Staff">
+                <div class="overlay">
+                    <span class="text-4xl mb-4 group-hover:scale-125 transition-transform duration-500">🩺</span>
+                    <h3 class="text-3xl font-black mb-3">의료진 찾기</h3>
+                    <p class="text-blue-100/80 font-medium leading-relaxed">각 분야별 최고의 전문의와<br>최적의 진료 상담</p>
                 </div>
-                <div class="quick-box p-8 rounded-xl text-gray-900 flex flex-col items-center cursor-pointer">
-                    <span class="text-3xl mb-3">🕒</span>
-                    <span class="text-xl font-bold">진료시간표</span>
+            </div>
+            <!-- 3. 진료시간표 -->
+            <div class="image-card group">
+                <img src="https://images.unsplash.com/photo-1538108197017-c1b99a07c7f0?auto=format&fit=crop&q=80&w=800" alt="Hospital Schedule">
+                <div class="overlay">
+                    <span class="text-4xl mb-4 group-hover:scale-125 transition-transform duration-500">🕒</span>
+                    <h3 class="text-3xl font-black mb-3">진료시간표</h3>
+                    <p class="text-blue-100/80 font-medium leading-relaxed">과목별 진료 시간과<br>휴진 정보를 한눈에 확인</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 자주 찾는 서비스 그리드 -->
-    <section class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between items-end mb-12">
-                <div>
-                    <h2 class="text-3xl font-bold text-gray-900">환자 중심 서비스</h2>
-                    <p class="text-gray-500 mt-2">구리 센트럴병원이 제공하는 편리한 온라인 서비스입니다.</p>
-                </div>
-                <a href="#" class="text-snuh-blue font-bold flex items-center">전체 서비스 보기 <span class="ml-1">+</span></a>
+    <!-- 환자 중심 서비스 그리드 -->
+    <section id="services" class="py-48 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-32">
+                <h2 class="text-5xl font-black text-gray-900 tracking-tight">Smart Hospital Services</h2>
+                <div class="w-20 h-2 bg-snuh-blue mx-auto mt-10 rounded-full"></div>
+                <p class="mt-12 text-2xl text-gray-500 leading-loose max-w-3xl mx-auto font-light">
+                    방문 전부터 귀가 후까지, 환자님의 편안한 회복을 위해<br>구리 센트럴병원의 혁신적인 스마트 시스템이 작동합니다.
+                </p>
             </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <a href="#" class="bg-white p-6 rounded-2xl border border-gray-100 flex flex-col items-center hover:shadow-lg transition">
-                    <span class="text-3xl mb-4">📑</span>
-                    <span class="text-sm font-bold">증명서 발급</span>
-                </a>
-                <a href="#" class="bg-white p-6 rounded-2xl border border-gray-100 flex flex-col items-center hover:shadow-lg transition">
-                    <span class="text-3xl mb-4">🏠</span>
-                    <span class="text-sm font-bold">처방전 조회</span>
-                </a>
-                <a href="#" class="bg-white p-6 rounded-2xl border border-gray-100 flex flex-col items-center hover:shadow-lg transition">
-                    <span class="text-3xl mb-4">🔍</span>
-                    <span class="text-sm font-bold">검사결과</span>
-                </a>
-                <a href="#" class="bg-white p-6 rounded-2xl border border-gray-100 flex flex-col items-center hover:shadow-lg transition">
-                    <span class="text-3xl mb-4">📍</span>
-                    <span class="text-sm font-bold">오시는 길</span>
-                </a>
-                <a href="#" class="bg-white p-6 rounded-2xl border border-gray-100 flex flex-col items-center hover:shadow-lg transition">
-                    <span class="text-3xl mb-4">💰</span>
-                    <span class="text-sm font-bold">진료비 수납</span>
-                </a>
-                <a href="#" class="bg-white p-6 rounded-2xl border border-gray-100 flex flex-col items-center hover:shadow-lg transition">
-                    <span class="text-3xl mb-4">🚌</span>
-                    <span class="text-sm font-bold">셔틀버스</span>
-                </a>
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="bg-white p-14 rounded-[40px] shadow-sm hover:shadow-2xl transition-all duration-500 group border border-gray-50">
+                    <div class="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center text-4xl mb-10 group-hover:bg-snuh-blue group-hover:text-white transition-all">📑</div>
+                    <h3 class="text-2xl font-black mb-6">증명서 발급</h3>
+                    <p class="text-gray-500 leading-[2] text-lg font-light">병원 방문 없이 온라인으로 간편하게<br>진단서 및 각종 증명서를 발급 받으세요.</p>
+                </div>
+                <div class="bg-white p-14 rounded-[40px] shadow-sm hover:shadow-2xl transition-all duration-500 group border border-gray-50">
+                    <div class="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center text-4xl mb-10 group-hover:bg-snuh-blue group-hover:text-white transition-all">🔍</div>
+                    <h3 class="text-2xl font-black mb-6">검사결과 조회</h3>
+                    <p class="text-gray-500 leading-[2] text-lg font-light">본인이 직접 정밀 검사 결과를<br>실시간으로 확인하고 관리할 수 있습니다.</p>
+                </div>
+                <div class="bg-white p-14 rounded-[40px] shadow-sm hover:shadow-2xl transition-all duration-500 group border border-gray-50">
+                    <div class="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center text-4xl mb-10 group-hover:bg-snuh-blue group-hover:text-white transition-all">📍</div>
+                    <h3 class="text-2xl font-black mb-6">위치 안내</h3>
+                    <p class="text-gray-500 leading-[2] text-lg font-light">층별 안내부터 셔틀버스 정보까지<br>병원을 더 쉽고 빠르게 이용하는 방법입니다.</p>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- 의료진 소개 섹션 -->
-    <section id="specialists" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-black text-gray-900 mb-4 tracking-tight">분야별 최고의 전문의</h2>
-            <div class="w-12 h-1 bg-snuh-blue mx-auto mb-6"></div>
-            <p class="text-gray-500">당신의 건강을 위해 365일 연구하는 구리 센트럴병원의 의료진입니다.</p>
+    <section id="specialists" class="py-48 max-w-7xl mx-auto px-6">
+        <div class="flex flex-col lg:flex-row justify-between items-start mb-32 gap-16">
+            <div class="max-w-3xl">
+                <h2 class="text-6xl font-black text-gray-900 tracking-tight mb-10">Trusted Specialists</h2>
+                <p class="text-2xl text-gray-400 leading-loose font-light">
+                    대학병원 교수 출신의 권위 있는 의료진이<br>환자 한 분 한 분을 위해 정밀하고 세심한 진료를 약속합니다.
+                </p>
+            </div>
+            <button class="bg-snuh-blue text-white px-12 py-5 rounded-full font-bold text-xl hover:bg-blue-900 transition-all shadow-xl shadow-blue-900/20">의료진 전체보기</button>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div class="group cursor-pointer">
-                <div class="relative overflow-hidden rounded-2xl bg-gray-200 aspect-[3/4] mb-4">
-                    <img src="https://images.unsplash.com/photo-1559839734-2b71f1536783?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-16">
+            <div class="text-center group">
+                <div class="aspect-[3/4] rounded-[50px] overflow-hidden mb-10 shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71f1536783?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000">
                 </div>
-                <h3 class="text-xl font-bold">김중앙 교수</h3>
-                <p class="text-snuh-blue font-medium mb-2">순환기내과 전문의</p>
-                <p class="text-sm text-gray-500 line-clamp-2">심장 질환 및 고혈압 치료의 권위자입니다.</p>
+                <h3 class="text-3xl font-black mb-3">김중앙 교수</h3>
+                <p class="text-snuh-blue font-bold text-xl mb-4">순환기내과 전문의</p>
+                <p class="text-gray-400 text-sm leading-relaxed px-4">심혈관 질환 진단 및 치료 분야 국내 최고 권위자</p>
             </div>
-            <div class="group cursor-pointer">
-                <div class="relative overflow-hidden rounded-2xl bg-gray-200 aspect-[3/4] mb-4">
-                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <div class="text-center group">
+                <div class="aspect-[3/4] rounded-[50px] overflow-hidden mb-10 shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000">
                 </div>
-                <h3 class="text-xl font-bold">이센트럴 교수</h3>
-                <p class="text-snuh-blue font-medium mb-2">정형외과 전문의</p>
-                <p class="text-sm text-gray-500 line-clamp-2">척추 및 관절 비수술 재생 치료를 전문으로 합니다.</p>
+                <h3 class="text-3xl font-black mb-3">이센트럴 교수</h3>
+                <p class="text-snuh-blue font-bold text-xl mb-4">정형외과 전문의</p>
+                <p class="text-gray-400 text-sm leading-relaxed px-4">최소 절개 인공관절 및 척추 내시경 수술 전문가</p>
             </div>
-            <div class="group cursor-pointer">
-                <div class="relative overflow-hidden rounded-2xl bg-gray-200 aspect-[3/4] mb-4">
-                    <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <div class="text-center group">
+                <div class="aspect-[3/4] rounded-[50px] overflow-hidden mb-10 shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000">
                 </div>
-                <h3 class="text-xl font-bold">박검진 교수</h3>
-                <p class="text-snuh-blue font-medium mb-2">영상의학과 전문의</p>
-                <p class="text-sm text-gray-500 line-clamp-2">정밀 판독 시스템을 통한 조기 암 발견 전문입니다.</p>
+                <h3 class="text-3xl font-black mb-3">박검진 교수</h3>
+                <p class="text-snuh-blue font-bold text-xl mb-4">영상의학과 전문의</p>
+                <p class="text-gray-400 text-sm leading-relaxed px-4">최신 3.0T MRI 영상 판독 및 정밀 건강 검진 설계</p>
             </div>
-            <div class="group cursor-pointer">
-                <div class="relative overflow-hidden rounded-2xl bg-gray-200 aspect-[3/4] mb-4">
-                    <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <div class="text-center group">
+                <div class="aspect-[3/4] rounded-[50px] overflow-hidden mb-10 shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000">
                 </div>
-                <h3 class="text-xl font-bold">최미래 교수</h3>
-                <p class="text-snuh-blue font-medium mb-2">소아청소년과 전문의</p>
-                <p class="text-sm text-gray-500 line-clamp-2">우리 아이들의 올바른 성장과 발달을 책임집니다.</p>
+                <h3 class="text-3xl font-black mb-3">최미래 교수</h3>
+                <p class="text-snuh-blue font-bold text-xl mb-4">소아청소년과 전문의</p>
+                <p class="text-gray-400 text-sm leading-relaxed px-4">우리 아이들의 건강한 성장을 위한 평생 주치의</p>
             </div>
         </div>
     </section>
 
-    <!-- 예약 폼 (고급형) -->
-    <section id="appointment" class="py-24 bg-gray-100">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
-                <div class="md:w-[40%] bg-snuh-blue p-16 text-white flex flex-col justify-between">
-                    <div>
-                        <h2 class="text-4xl font-bold mb-8">쉽고 빠른<br>온라인 예약</h2>
-                        <p class="text-blue-100 mb-10 leading-relaxed opacity-80">환자분의 소중한 시간을 아껴드립니다.<br>정보를 입력하시면 전문 상담원이 확인 후 직접 전화를 드립니다.</p>
-                        <ul class="space-y-4 text-sm">
-                            <li class="flex items-center gap-3">✅ 보건복지부 인증 의료기관</li>
-                            <li class="flex items-center gap-3">✅ 전문의 20인 직접 진료</li>
-                            <li class="flex items-center gap-3">✅ 대학병원급 정밀 검사 장비</li>
-                        </ul>
-                    </div>
-                    <div class="mt-12">
-                        <p class="text-sm opacity-60 uppercase tracking-widest mb-2">Reservation Center</p>
-                        <p class="text-4xl font-black">1588-0000</p>
+    <!-- 온라인 예약 폼 -->
+    <section id="appointment" class="py-48 bg-slate-900 text-white overflow-hidden relative">
+        <div class="absolute top-0 right-0 w-1/2 h-full opacity-20 pointer-events-none">
+            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1920" class="w-full h-full object-cover">
+        </div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row gap-24">
+                <div class="lg:w-2/5">
+                    <h2 class="text-6xl font-black mb-12 tracking-tight">Quick<br>Reservation</h2>
+                    <p class="text-2xl opacity-70 leading-[2] font-light mb-16">
+                        빠른 예약 상담을 원하시면 연락처를 남겨주세요.<br>전문 코디네이터가 30분 이내에(진료시간 내)<br>연락을 드려 예약을 확정해 드립니다.
+                    </p>
+                    <div class="bg-white/10 p-10 rounded-[40px] border border-white/20 backdrop-blur-md">
+                        <p class="text-xs font-bold tracking-[0.3em] uppercase mb-4 text-blue-400">Call Center</p>
+                        <p class="text-6xl font-black tracking-tighter">1588-0000</p>
+                        <p class="mt-6 text-sm opacity-50">평일 09:00 - 18:00 | 토요일 09:00 - 13:00</p>
                     </div>
                 </div>
-                <div class="md:w-[60%] p-16">
-                    <form id="appointmentForm" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Patient Name</label>
-                            <input type="text" id="apt-name" placeholder="성함" required class="w-full border-b-2 border-gray-100 py-3 focus:border-snuh-blue outline-none transition">
+                <div class="lg:w-3/5 bg-white rounded-[60px] p-20 text-gray-900 shadow-2xl">
+                    <form id="appointmentForm" class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                        <div class="flex flex-col gap-6">
+                            <label class="text-xs font-black text-gray-300 uppercase tracking-widest">Name</label>
+                            <input type="text" id="apt-name" placeholder="환자 성함" required class="border-b-4 border-gray-100 py-6 focus:border-snuh-blue outline-none transition text-2xl font-bold placeholder:text-gray-200">
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Phone Number</label>
-                            <input type="tel" id="apt-phone" placeholder="010-0000-0000" required class="w-full border-b-2 border-gray-100 py-3 focus:border-snuh-blue outline-none transition">
+                        <div class="flex flex-col gap-6">
+                            <label class="text-xs font-black text-gray-300 uppercase tracking-widest">Contact</label>
+                            <input type="tel" id="apt-phone" placeholder="010-0000-0000" required class="border-b-4 border-gray-100 py-6 focus:border-snuh-blue outline-none transition text-2xl font-bold placeholder:text-gray-200">
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Department</label>
-                            <select id="apt-dept" class="w-full border-b-2 border-gray-100 py-3 focus:border-snuh-blue outline-none transition bg-transparent">
-                                <option>내과 센터</option>
-                                <option>정형외과 센터</option>
-                                <option>종합검진 센터</option>
+                        <div class="flex flex-col gap-6">
+                            <label class="text-xs font-black text-gray-300 uppercase tracking-widest">Dept</label>
+                            <select id="apt-dept" class="border-b-4 border-gray-100 py-6 focus:border-snuh-blue outline-none transition text-2xl font-bold bg-white cursor-pointer">
+                                <option>순환기내과</option>
+                                <option>정형외과</option>
                                 <option>소아청소년과</option>
+                                <option>종합건강검진</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Date</label>
-                            <input type="date" id="apt-date" class="w-full border-b-2 border-gray-100 py-3 focus:border-snuh-blue outline-none transition">
+                        <div class="flex flex-col gap-6">
+                            <label class="text-xs font-black text-gray-300 uppercase tracking-widest">Date</label>
+                            <input type="date" id="apt-date" class="border-b-4 border-gray-100 py-6 focus:border-snuh-blue outline-none transition text-2xl font-bold cursor-pointer">
                         </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Symptoms</label>
-                            <textarea id="apt-msg" placeholder="증상을 간단히 남겨주세요." class="w-full border-b-2 border-gray-100 py-3 focus:border-snuh-blue outline-none transition h-20 resize-none"></textarea>
+                        <div class="md:col-span-2 flex flex-col gap-6">
+                            <label class="text-xs font-black text-gray-300 uppercase tracking-widest">Symptoms</label>
+                            <textarea id="apt-msg" placeholder="증상을 간단히 남겨주세요." class="border-b-4 border-gray-100 py-6 focus:border-snuh-blue outline-none transition h-32 resize-none text-2xl font-bold leading-relaxed placeholder:text-gray-200"></textarea>
                         </div>
-                        <button type="submit" class="md:col-span-2 bg-snuh-blue text-white py-5 rounded-lg font-bold text-xl hover:bg-blue-900 transition shadow-xl shadow-blue-900/20">신청하기</button>
+                        <button type="submit" class="md:col-span-2 bg-snuh-blue text-white py-8 rounded-[30px] font-black text-3xl hover:bg-blue-900 transition-all shadow-3xl shadow-blue-900/40 active:scale-95">예약 상담 신청</button>
                     </form>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- AI 위젯 -->
-    <div class="fixed bottom-10 right-10 z-[60]">
-        <button id="chatToggle" class="bg-snuh-blue w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-white text-3xl hover:scale-110 transition group relative">
+    <!-- AI 챗봇 (센트럴 케어) -->
+    <div class="fixed bottom-16 right-16 z-[60]">
+        <button id="chatToggle" class="bg-snuh-blue w-28 h-28 rounded-full shadow-[0_30px_60px_rgba(0,74,149,0.4)] flex items-center justify-center text-white text-5xl hover:scale-110 transition-all duration-500 group relative">
             💬
-            <span class="absolute right-20 bg-white text-snuh-blue px-4 py-2 rounded-xl text-sm font-bold shadow-lg opacity-0 group-hover:opacity-100 transition whitespace-nowrap">AI 상담 비서 '센트럴 케어'</span>
+            <span class="absolute right-32 bg-white text-snuh-blue px-10 py-5 rounded-[25px] text-lg font-black shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap border border-blue-50">AI 상담 비서 '센트럴 케어'</span>
         </button>
-        <div id="chatWindow" class="chat-window absolute bottom-20 right-0 w-[400px] h-[600px] bg-white rounded-3xl shadow-2xl border flex-col overflow-hidden">
-            <div class="bg-snuh-blue p-6 text-white flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-black">G</div>
+        <div id="chatWindow" class="absolute bottom-32 right-0 w-[500px] h-[750px] bg-white rounded-[50px] shadow-[0_50px_120px_rgba(0,0,0,0.2)] border border-gray-100 flex-col overflow-hidden">
+            <div class="bg-snuh-blue p-12 text-white flex justify-between items-center">
+                <div class="flex items-center gap-6">
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center font-black text-3xl shadow-inner">G</div>
                     <div>
-                        <p class="font-bold">센트럴 케어 AI</p>
-                        <p class="text-[10px] opacity-70">Guri Central Hospital Digital Assistant</p>
+                        <p class="font-black text-2xl">센트럴 케어 AI</p>
+                        <p class="text-xs opacity-60 italic tracking-widest mt-2 uppercase font-bold">Smart Digital Assistant</p>
                     </div>
                 </div>
-                <button id="chatClose" class="text-2xl">✕</button>
+                <button id="chatClose" class="text-4xl hover:rotate-90 transition-transform p-4">✕</button>
             </div>
-            <div id="chatMessages" class="flex-grow p-6 overflow-y-auto bg-gray-50 space-y-4 text-sm leading-relaxed">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 self-start mr-auto max-w-[85%]">
-                    안녕하세요! 구리 센트럴병원 AI 상담원입니다. 진료 예약이나 병원 이용에 대해 무엇이든 물어보세요.
+            <div id="chatMessages" class="flex-grow p-12 overflow-y-auto bg-gray-50 space-y-10 text-lg leading-[1.8]">
+                <div class="bg-white p-8 rounded-[35px] rounded-tl-none shadow-sm border border-gray-100 self-start mr-auto max-w-[90%] text-gray-700 font-medium">
+                    환영합니다! 구리 센트럴병원 AI 안내 비서입니다.<br><br>어떤 도움이 필요하신가요? 질문을 입력해 주세요.
                 </div>
             </div>
-            <div class="p-6 bg-white border-t flex gap-2">
-                <input type="text" id="chatInput" placeholder="메시지를 입력하세요..." class="flex-grow bg-gray-100 rounded-full px-5 py-3 outline-none focus:ring-2 focus:ring-snuh-blue transition">
-                <button id="chatSend" class="bg-snuh-blue text-white px-6 py-3 rounded-full font-bold">보내기</button>
+            <div class="p-10 bg-white border-t flex gap-6">
+                <input type="text" id="chatInput" placeholder="질문을 입력해 주세요..." class="flex-grow bg-gray-50 rounded-full px-10 py-6 outline-none focus:ring-4 focus:ring-blue-100 transition-all text-xl font-bold">
+                <button id="chatSend" class="bg-snuh-blue text-white px-12 py-6 rounded-full font-black text-xl hover:bg-blue-900 transition-all active:scale-95 shadow-xl shadow-blue-900/20">전송</button>
             </div>
         </div>
     </div>
 
     <!-- 푸터 -->
-    <footer class="bg-[#1a1a1a] text-gray-400 py-20">
-        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
+    <footer class="bg-slate-950 text-gray-500 py-48">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-32">
             <div class="md:col-span-2">
-                <p class="text-2xl font-black text-white mb-6">GURI CENTRAL HOSPITAL</p>
-                <p class="max-w-md mb-8 leading-relaxed">구리 센트럴병원은 최고 수준의 의료진과 최첨단 장비를 통해 지역 사회의 건강한 삶을 지키는 등불이 되겠습니다.</p>
-                <div class="flex space-x-6 text-2xl">
-                    <a href="#" class="hover:text-white">YT</a>
-                    <a href="#" class="hover:text-white">IG</a>
-                    <a href="#" class="hover:text-white">FB</a>
-                    <a href="#" class="hover:text-white">BG</a>
+                <p class="text-4xl font-black text-white mb-12 tracking-tighter">GURI CENTRAL HOSPITAL</p>
+                <p class="max-w-md mb-16 leading-[2.2] text-xl font-light">
+                    단순한 진료를 넘어, 당신의 삶이 더 건강하고 빛날 수 있도록<br>정직한 의료와 최첨단 기술로 함께하겠습니다.
+                </p>
+                <div class="flex space-x-12">
+                    <a href="#" class="hover:text-white transition-all text-sm font-black tracking-widest uppercase">Blog</a>
+                    <a href="#" class="hover:text-white transition-all text-sm font-black tracking-widest uppercase">YouTube</a>
+                    <a href="#" class="hover:text-white transition-all text-sm font-black tracking-widest uppercase">Instagram</a>
                 </div>
             </div>
             <div>
-                <p class="text-white font-bold mb-6">Patient Center</p>
-                <ul class="space-y-4 text-sm">
-                    <li><a href="#" class="hover:text-white">진료 예약 안내</a></li>
-                    <li><a href="#" class="hover:text-white">온라인 결과 조회</a></li>
-                    <li><a href="#" class="hover:text-white">증명서 발급 안내</a></li>
-                    <li><a href="#" class="hover:text-white">비급여 진료비 안내</a></li>
+                <p class="text-white font-black mb-12 text-xl tracking-tight uppercase">Patient Help</p>
+                <ul class="space-y-8 text-lg font-medium">
+                    <li><a href="#" class="hover:text-white transition-all">진료 예약/조회</a></li>
+                    <li><a href="#" class="hover:text-white transition-all">검사 결과 확인</a></li>
+                    <li><a href="#" class="hover:text-white transition-all">온라인 서류 발급</a></li>
+                    <li><a href="#" class="hover:text-white transition-all">비급여 진료비</a></li>
                 </ul>
             </div>
             <div>
-                <p class="text-white font-bold mb-6">Contact Us</p>
-                <div class="text-sm space-y-4">
-                    <p>📍 경기도 구리시 중앙로 123</p>
-                    <p>📞 1588-0000</p>
-                    <p>🕒 평일 09:00 - 18:00</p>
-                    <p>🕒 토요일 09:00 - 13:00</p>
+                <p class="text-white font-black mb-12 text-xl tracking-tight uppercase">Get in Touch</p>
+                <div class="text-lg space-y-8 font-light leading-loose">
+                    <p class="flex items-start gap-5">📍 <span>경기도 구리시 중앙로 123<br>구리 센트럴 메디컬 타워</span></p>
+                    <p class="flex items-center gap-5">📞 <span class="text-white font-black">1588-0000</span></p>
+                    <p class="flex items-center gap-5">🕒 <span>평일 09:00 - 18:00</span></p>
                 </div>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto px-4 mt-20 pt-10 border-t border-gray-800 flex flex-col md:flex-row justify-between text-xs gap-4">
-            <div class="flex gap-6">
-                <a href="#" class="text-white font-bold">개인정보처리방침</a>
-                <a href="#">이메일무단수집거부</a>
-                <a href="#">환자권리장전</a>
+        <div class="max-w-7xl mx-auto px-6 mt-48 pt-16 border-t border-slate-900 text-sm flex flex-col md:flex-row justify-between items-center gap-10 font-medium">
+            <p>© 2024 Guri Central Hospital. Innovation in Health.</p>
+            <div class="flex gap-16 text-xs font-black uppercase tracking-widest">
+                <a href="#" class="text-white hover:underline">Privacy Policy</a>
+                <a href="#" class="hover:text-white">Patient Rights</a>
             </div>
-            <p>© 2024 Guri Central Hospital. All Rights Reserved.</p>
         </div>
     </footer>
 
